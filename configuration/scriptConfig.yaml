@@ -1,0 +1,17 @@
+Custom script:
+  Script execution interval(seconds): 5
+  Execute script after (percent alarms per interval): 50
+  Execute higher level script after first runs for (fixed times): 10
+  Script folder: /home/user/Desktop/hrpi/attack_script/
+  Script file: custom_script.py
+  Higher script folder: /home/user/Desktop/hrpi/attack_script
+  Higher script file: higher_script.py
+
+Database:
+  IP adress: 127.0.0.1
+  Port: 3000
+  Namespace: firewall
+  Set: HRPI
+
+Support vector machine:
+  Parameter file: /home/user/Desktop/hrpi/nauji_parametrai.pkl
