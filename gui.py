@@ -47,19 +47,6 @@ app.layout = html.Div([
                 dcc.Interval(id='live-graph-update', interval=500, n_intervals=0),
                 html.Br(),
                 html.Div(id='live-table-container', className='element-table'),
-                dte.DataTable(
-                    id='live-iptable',
-                    rows='',
-                    columns=['IP address', 'Request count'],
-                    max_rows_in_viewport=1000,
-                    row_height=32,
-                    resizable=False,
-                    editable=False,
-                    row_selectable=False,
-                    filterable=False,
-                    sortable=False,
-                    enable_drag_and_drop=False,
-                ),
                 dcc.Interval(id='table-update', interval=2000, n_intervals=0),
 
             ]),
@@ -113,27 +100,12 @@ app.layout = html.Div([
                  {'label': '50-55 min.', 'value': 50},
                  {'label': '55-60 min.', 'value': 55}], value='0'),
                 dcc.Graph(id='history-graph'),
+                html.Br(),
                 html.Div(id='history-table-container', className='element-table'),
-                dte.DataTable(
-                    id='history-iptable',
-                    rows='',
-                    columns=['IP address', 'Request count'],
-                    max_rows_in_viewport=1000,
-                    row_height=32,
-                    resizable=False,
-                    editable=False,
-                    row_selectable=False,
-                    filterable=False,
-                    sortable=False,
-                    enable_drag_and_drop=False,
-                ),
-
             ]),
-
-
-
         ], className='hrpi-graph'),
-
+        # Fixas datatable xdd loll
+        html.Div(dte.DataTable(rows=[{}]), style={'display': 'none'}),
     ], className='element-table'),
 
 ],)
@@ -158,36 +130,29 @@ def compute_value(graphStatus, intervals):
                         request_sum += IP[1]
 
         ip_count = len(ip_requests)
+        ip_table = list()
+        for IP, count in ip_requests.items():
+            ip_table.append({'IP address': IP, 'Request amount': count})
+        ip_table.sort(key=lambda x: -x['Request amount'])
         return [
             html.Div([
                         html.H3("IP statistics table"),
                         html.H3("Incoming ip addresses amount: " + str(ip_count) + ". Total request amount: " + str(request_sum)),
                     ], className='Title'),
-            html.Div([
-
-                ], className='iptable-table')
+            dte.DataTable(
+                id='live-iptable',
+                rows=ip_table,
+                columns=['IP address', 'Request amount'],
+                max_rows_in_viewport=1000,
+                row_height=32,
+                resizable=False,
+                editable=False,
+                row_selectable=False,
+                filterable=False,
+                sortable=False,
+                enable_drag_and_drop=False,
+            ),
         ]
-# Updates Live Table
-@app.callback(Output('live-iptable', 'rows'),
-              [Input('update-dropdown', 'value'),
-              Input('table-update', 'n_intervals')])
-def compute_value(graphStatus, intervals):
-    if (graphStatus == True):
-        ltime = int(time.time() * 10)
-        records = aero.getDataIP(timeFrom=ltime - 301, timeTo=ltime)
-        ip_requests = {}
-        for record in records:
-            if (record[1] != None):
-                IPlist = record[2]
-                if IPlist is not None:
-                    for IP in IPlist.items():
-                        IP_address = (str(ipaddress.IPv4Address(int(IP[0]))))
-                        ip_requests[IP_address] = ip_requests.get(IP_address, 0) + IP[1]
-        ip_table = list()
-        for IP, count in ip_requests.items():
-            ip_table.append({'IP address': IP, 'Request count': count})
-        ip_table.sort(key=lambda x: -x['Request count'])
-        return ip_table
     else:
         return []
 
@@ -256,10 +221,10 @@ def display_page(intervals, graphStatus):
                 ],
                 colorbar=dict(
                     tickmode='array',
-                    title='Pavojaus Lygis',
+                    title='Danger Level',
                     titleside='top',
                     tickvals=[0.4, 1, 1.6],
-                    ticktext=['Saugu', 'Itartina', 'Pavojinga'],
+                    ticktext=['Safe', 'Suspicious', 'Dangerous'],
                     dtick=(1),
                 )
             ),
@@ -305,8 +270,7 @@ def display_history(graphStatus, valueHours, valueMinutes, valueDate, date):
             timeReadFrom = (update_time + int(valueHours) * 3600 + int(valueMinutes) * 60) * 10
             timeReadTo = (update_time + int(valueHours) * 3600 + (int(valueMinutes) + 5) * 60) * 10
         else:
-            timeReadFrom = int(
-                time.mktime(dt.strptime(date['xaxis.range[0]'], "%Y-%m-%d %H:%M:%S.%f").timetuple()) * 10)
+            timeReadFrom = int(time.mktime(dt.strptime(date['xaxis.range[0]'], "%Y-%m-%d %H:%M:%S.%f").timetuple()) * 10)
             timeReadTo = int(time.mktime(dt.strptime(date['xaxis.range[1]'], "%Y-%m-%d %H:%M:%S.%f").timetuple()) * 10)
         #print(timeReadFrom, timeReadTo, timeReadTo - timeReadFrom)
         dataSpike = aero.getData(timeFrom=timeReadFrom, timeTo=timeReadTo+1)
@@ -348,10 +312,10 @@ def display_history(graphStatus, valueHours, valueMinutes, valueDate, date):
                 ],
                 colorbar=dict(
                     tickmode='array',
-                    title='Pavojaus Lygis',
+                    title='Danger Level',
                     titleside='top',
                     tickvals=[0.4, 1, 1.6],
-                    ticktext=['Saugu', 'Itartina', 'Pavojinga'],
+                    ticktext=['Safe', 'Suspicious', 'Dangerous'],
                     dtick=(1),
                 )
             ),
@@ -434,48 +398,33 @@ def compute_value(graphStatus, valueHours, valueMinutes, valueDate, date):
                         request_sum += IP[1]
 
         ip_count = len(ip_requests)
-        return [
-            html.Div([
-                        html.H3("IP statistics table"),
-                        html.H3("Incoming ip addresses amount: " + str(ip_count) + ". Total request amount: " + str(request_sum)),
-                    ], className='Title'),
-            html.Div([
-
-                ], className='iptable-table')
-        ]
-    else: return []
-# Updates History Table
-@app.callback(Output('history-iptable', 'rows'),
-              [Input('update-dropdown', 'value'),
-               Input('hour-dropdown', 'value'),
-               Input('minute-dropdown', 'value'),
-               Input('date-input', 'date'),
-               Input('history-graph', 'relayoutData')])
-def compute_value(graphStatus, valueHours, valueMinutes, valueDate, date):
-    if (graphStatus == False):
-        if (date == {'autosize': True}):
-            update_time = int(time.mktime(dt.strptime(valueDate, "%Y-%m-%d").timetuple()))
-            timeReadFrom = (update_time + int(valueHours) * 3600 + int(valueMinutes) * 60) * 10
-            timeReadTo = (update_time + int(valueHours) * 3600 + (int(valueMinutes) + 5) * 60) * 10
-        else:
-            timeReadFrom = int(time.mktime(dt.strptime(date['xaxis.range[0]'], "%Y-%m-%d %H:%M:%S.%f").timetuple())*10)
-            timeReadTo = int(time.mktime(dt.strptime(date['xaxis.range[1]'], "%Y-%m-%d %H:%M:%S.%f").timetuple())*10)
-        records = aero.getDataIP(timeFrom=timeReadFrom, timeTo=timeReadTo)
-        ip_requests = {}
-        for record in records:
-            if (record[1] != None):
-                IPlist = record[2]
-                if IPlist is not None:
-                    for IP in IPlist.items():
-                        IP_address = (str(ipaddress.IPv4Address(int(IP[0]))))
-                        ip_requests[IP_address] = ip_requests.get(IP_address, 0) + IP[1]
         ip_table = list()
         for IP, count in ip_requests.items():
-            ip_table.append({'IP address': IP, 'Request count': count})
-        ip_table.sort(key=lambda x: -x['Request count'])
-        return ip_table
+            ip_table.append({'IP address': IP, 'Request amount': count})
+        ip_table.sort(key=lambda x: -x['Request amount'])
+        return [
+            html.Div([
+                html.H3("IP statistics table"),
+                html.H3(
+                    "Incoming ip addresses amount: " + str(ip_count) + ". Total request amount: " + str(request_sum)),
+            ], className='Title'),
+            dte.DataTable(
+                id='histoy-iptable',
+                rows=ip_table,
+                columns=['IP address', 'Request amount'],
+                max_rows_in_viewport=1000,
+                row_height=32,
+                resizable=False,
+                editable=False,
+                row_selectable=False,
+                filterable=False,
+                sortable=False,
+                enable_drag_and_drop=False,
+            ),
+        ]
     else:
         return []
+
 #-----------------------------------------------CSS files---------------------------------------------------------------
 STATIC_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
 @app.server.route('/static/<resource>')
