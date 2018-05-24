@@ -1,0 +1,79 @@
+body{
+    font-size: 1.5em;
+    line-height: 1.6;
+    font-weight: 400;
+    font-family: Raleway,HelveticaNeue,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: rgb(22, 22, 22);
+}
+
+.banner {
+    height: 80px;
+    margin: 0px 0px 10px;
+    background-color: rgb(66, 196, 247);
+    border-radius: 2px;
+}
+
+.banner h2{
+    color: white;
+    font-size: 50px;
+    margin: 0px 0px 10px;
+    margin-left: 5%;
+    display: inline-block;
+}
+
+.banner Img{
+    position: relative;
+    float: right;
+    right: 10px;
+    height: 80px;
+}
+
+.element-table .Title{
+  border-bottom: 1px solid rgb(216, 216, 216);
+}
+
+.element-table .Title h2{
+    font-size: 1rem;
+    color: rgb(66, 196, 247);
+    border-bottom: rgb(216, 216, 216);
+    margin-top: 3px;
+    margin-left: 10px;
+    margin-bottom: 3px;
+}
+
+.element-table .Title h3{
+    font-size: 1.75rem;
+    color: rgb(66, 196, 247);
+    border-bottom: rgb(216, 216, 216);
+    margin-top: 3px;
+    margin-left: 10px;
+    margin-bottom: 3px;
+}
+
+.element-table {
+    border-radius: 5px;
+    border-width: 1px 1px 0px;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: initial;
+    border-left-style: solid;
+    border-top-color: rgb(216, 216, 216);
+    border-right-color: rgb(216, 216, 216);
+    border-bottom-color: initial;
+    border-left-color: rgb(216, 216, 216);
+    border-image: initial;
+    padding-right: 10px;
+}
+
+.iptable-table {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-right: 9px;
+    margin-left: 0px;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    font-size: 0.6em;
+    color: rgb(0, 0, 0)
+}
