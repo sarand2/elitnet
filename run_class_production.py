@@ -21,7 +21,6 @@ class SnifferProcessClass(object):
     def run(self):
         self.sniffer.run_sniffer(self.queue)
 
-
 class HrpiProcessClass(object):
     def __init__(self, lock, queue, sniffer, analyzer, AerospikeClient):
         self.lock = lock
@@ -34,7 +33,6 @@ class HrpiProcessClass(object):
         self.first_value = 0
         self.attack_alert = 0
         self.Aero = AerospikeClient
-
         self.attack_alert_limit = ((self.attack_time * 10) / 100) * self.attack_percent
         self.custom_script_counter = ConfigurationReader.higherScriptExecution()
         self.script_execution_counter = self.custom_script_counter
@@ -63,13 +61,9 @@ class HrpiProcessClass(object):
                     self.lock.acquire()
                     value = self.queue.get(False)
                     self.lock.release()
-                    #print(value.return_data())
-                #print(self.queue.qsize())
-                if self.timestamp == value.get_timestamp():
-                   # print("timestamp={0}, value.timestamp ={1}, dedama i sarasa".format(self.timestamp, sniffer.get_timestamp(value)))
+                if self.timestamp == value.get_timestamp():                 
                     self.sniffer.requests.add_request(value)
-                else:
-                    #print("timestamp {0} value.timestamp ={1}, nesutampa, spausdinama".format(self.timestamp, sniffer.get_timestamp(value)))
+                else:                  
                     if self.sniffer.requests.request_count() > 0:
                         requests_per_ip, request_count = sniffer.requests.return_request_normal_run()
                         mili_to_kalman = sniffer.requests.get_milisecond_timestamp()
@@ -81,20 +75,12 @@ class HrpiProcessClass(object):
                         counter = dictReturn['Counter']
                         unixtime = self.sniffer.requests.get_unix_timestamp()
                         self.Aero.loadData(self.sniffer.requests.get_unix_timestamp(), Y, alert, self.IsAttack)                       
-                        #self.Aero.put_data(milisecond, alert, Y, counter)
                         self.Aero.put_ip_table(sniffer.get_max_ips())
-                        #print("Get_max_ips = {0}".sniffer.get_max_ips())
-                        #print("ALERT = {0}".format(alert))
+                        print("ALERT = {0}".format(alert))
                         self.attack_alert += alert
-                        #print("Laiko {0} requestai: ".format(self.timestamp))
-                        #self.sniffer.requests.print_all_requests()
-
                     self.timestamp = value.get_timestamp()
-
                     while (self.datetimeValue < value.get_datetime()):
-                        self.datetimeValue += datetime.timedelta(0, 0, 100000)
-                    #print("Datetime + kito requesto laiko skirtumas: {0}".format(self.datetimeValue))
-
+                        self.datetimeValue += datetime.timedelta(0, 0, 100000)                   
                     if(self.datetimeValue >=  self.datetime_limit):
                         print("Datetime {0} virsijo limita {1} ".format(self.datetimeValue, self.datetime_limit))
                         if(self.attack_alert >= self.attack_alert_limit):
@@ -106,23 +92,17 @@ class HrpiProcessClass(object):
                                 self.script_execution_counter = self.custom_script_counter
                         else:
                             self.IsAttack = 0
-
                         self.attack_alert = 0
                         self.datetime_limit = self.datetimeValue + datetime.timedelta(0, self.attack_time)
                         print("Naujas datetime limitas: {0} ".format(self.datetime_limit))
-
-                        print("naujas timestamp =  {0}, sarasas isvalomas ir pridedama reiksme su : ".format(self.timestamp))
-                    #self.selftracker.print_diff()
+                        print("naujas timestamp =  {0}, sarasas isvalomas ir pridedama reiksme su : ".format(self.timestamp))             
                     self.sniffer.requests.clear_list()
-                    #print(str("Requestu masyvo dydis:") + str(sniffer.requests.return_size()))
-                    #self.sniffer.requests.clear_ip_list()
                     self.sniffer.requests.add_request(value)
             except pythonQueue.Empty:
                 self.lock.release()
                 self.logger.debug('Packet queue is empty')
             except Exception as e:
                 logging.error('Running loop failed. ' + 'Exception message: ' + str(repr(e)))
-                #time.sleep(0.3)
 
 def setup_logging(default_path='logging.yaml', default_level=logging.INFO):
     try:

@@ -120,7 +120,6 @@ class Sniffer:
 
     def get_url(self, packet):
         pkt = packet.getlayer(Raw).load
-        # print(type(pkt))
 
     def get_method(self, packet):
         pkt = packet.getlayer(Raw).load
@@ -204,11 +203,7 @@ class Sniffer:
                     datetimeValue = self.get_packet_time_data(pkt)
                     unixstamp = self.get_unix_timestamp_w_miliseconds(pkt)
                     single_request = HttpRequest(timestamp, source_ip, destination_ip, milisecond_stamp, datetimeValue, unixstamp)
-                    print("Aero_timestamp=",int(single_request.get_unix_timestamp()),"Ip address=",str(int(ipaddress.IPv4Address(source_ip))))
-                    self.Aero.incrementData('ip_table', single_request.get_unix_timestamp(), str(int(ipaddress.IPv4Address(source_ip))))
-                    
-                    
-                    #print(single_request.return_data())
+                    self.Aero.incrementData('ip_table', single_request.get_unix_timestamp(), str(int(ipaddress.IPv4Address(source_ip))))                   
                     self.lock.acquire()
                     self.packet_queue.put(single_request)
                     self.lock.release()
