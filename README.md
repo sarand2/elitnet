@@ -1,3 +1,3 @@
 # elitnet
 Projektinis darbas.
-![Paveikslelis](/images/components.jpg "Komponentų schema")
+![Paveikslelis](elitnet/images/components.png "Komponentų schema")
