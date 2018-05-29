@@ -1,3 +1,3 @@
 # elitnet
 Projektinis darbas.
-![asdasd](images/components.jpg "Komponentų schema")
+![asdasd](www.github.com/sarand2/elitnet/blob/images/components.jpg "Komponentų schema")
