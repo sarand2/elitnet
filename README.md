@@ -3,7 +3,7 @@ The HRPI analyzer module detects application-layer DDoS attacks and effectively 
 Using the mathematical approach in [1], this application can effectively detect attacks and run a set of according actions. The solution also provides easy to use graphical user interface with application’s traffic monitoring and attack notifications. The users of the monitoring system can also manipulate historical data.
 This solution also consists of generating training data for machine learning approach used in detecting attacks and its testing.
 # Idea
-The idea behind this component is very well described with the followint picture:<br>
+The idea behind this component is very well described with the following picture:<br>
 <p align="center">
 <img   src="images/module.png"  width="600" height="500">
  </p>
