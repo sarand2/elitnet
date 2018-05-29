@@ -1,3 +1,3 @@
 # elitnet
 Projektinis darbas.
-![Alt text](images/components.jpg?raw=true "Komponentų schema")
+![asdasd](images/components.jpg "Komponentų schema")
