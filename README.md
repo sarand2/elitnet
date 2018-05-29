@@ -1,9 +1,12 @@
 # Overview
-
 The HRPI analyzer module detects application-layer DDoS attacks and effectively acts as one of the components of L7 firewall.
 Using the mathematical approach in [1], this application can effectively detect attacks and run a set of according actions. The solution also provides easy to use graphical user interface with application’s traffic monitoring and attack notifications. The users of the monitoring system can also manipulate historical data.
 This solution also consists of generating training data for machine learning approach used in detecting attacks and its testing.
-
+# Idea
+The idea behind this component is very well described with the followint picture:<br>
+<p align="center">
+<img   src="images/module.png"  width="600" height="500">
+ </p>
 
 ***
 <b>Key functions:</b>
@@ -16,7 +19,9 @@ This solution also consists of generating training data for machine learning app
 Basic operation of this module is best described with 2 diagrams: components view and runtime view.
 <br>
 ***
-![Component view](images/components.png "Components")
+<p align="center">
+<img   src="images/components.png"  width="650" height="500">
+ </p>
 <br>
 NIC – Network Interface Card – device with which the module directly communicates to get real time traffic data<br>
 Training data generator – program responsible for generating training data for the SVM classifier<br>
@@ -30,4 +35,6 @@ HRPI DB – Aerospike DB for storing real time traffic data<br>
 WEB client – application running of user’s browser<br>
 ***
 Runtime sequence diagram for a single time interval packet set evaluation: <br>
-![Runtime view](images/runtime.png "Runtime")
+<p align="center">
+<img   src="images/runtime.png"  width="700" height="500">
+ </p
